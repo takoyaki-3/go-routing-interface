@@ -69,7 +69,7 @@ func (leg *LegStr) AddProperty(g *gtfs.GTFS) error {
 	}
 
 	// Geometry
-	if leg.Geometry.Type == "" {
+	if leg.Geometry == nil {
 		coordinates := [][]float64{}
 		for _, stopTime := range leg.StopTimes {
 			coordinates = append(coordinates, []float64{stopTime.StopLon, stopTime.StopLat})
