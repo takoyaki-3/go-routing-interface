@@ -2,7 +2,7 @@ package goroutinginterface
 
 import (
 	geojson "github.com/takoyaki-3/go-geojson"
-	gtfs "github.com/takoyaki-3/go-gtfs"
+	gtfs "github.com/takoyaki-3/go-gtfs/v2"
 )
 
 type StopTimeStr struct {
