@@ -101,7 +101,19 @@ func (leg *LegStr) AddProperty(g *gtfs.GTFS) error {
 	// fare cost
 	fareCost := 0.0
 	// f := fare.
-	// p,err := fare.GetFareAttribute(raptorData.Fare,from.StopID,to.StopID,trip.RouteID)
+	if leg.Type != "walk" && leg.Type != "wait" {
+		p,err := g.GetFareAttributeFromOD(leg.StopTimes[0].StopID,leg.StopTimes[len(leg.StopTimes)-1].StopID,leg.Route.ID)
+		if err != nil {
+			p,err := g.GetFareAttributeFromOD(leg.StopTimes[0].ZoneID,leg.StopTimes[len(leg.StopTimes)-1].ZoneID,leg.Route.ID)
+			if err != nil {
+				fareCost = -1.0
+			} else {
+				fareCost = p.Price
+			}
+		} else {
+			fareCost = p.Price
+		}
+	}
 
 	leg.Costs = CostStr{
 		Time:     floatPointer(timeCost),
