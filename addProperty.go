@@ -6,7 +6,6 @@ import (
 
 	geojson "github.com/takoyaki-3/go-geojson"
 	gtfs "github.com/takoyaki-3/go-gtfs/v2"
-	// fare "github.com/takoyaki-3/go-gtfs-fare"
 )
 
 // Legに対して付加情報を追加する関数
@@ -150,4 +149,26 @@ func (leg *LegStr) AddProperty(g *gtfs.GTFS) error {
 	}
 
 	return nil
+}
+
+func (trip *TripStr)AddProperty(g *gtfs.GTFS){
+
+	// Legを完成させる
+	for i,_:=range trip.Legs{
+		trip.Legs[i].AddProperty(g)
+	}
+
+	// コストの合計
+	c := NewCostStr()
+	for _, leg := range trip.Legs {
+		c = CostAdder(c, leg.Costs)
+	}
+	trip.Costs = c
+
+	// Property
+	trip.Properties.ArrivalTime = trip.Legs[len(trip.Legs)-1].Properties.ArrivalTime
+	trip.Properties.DepartureTime = trip.Legs[0].Properties.DepartureTime
+	arrivalTime := gtfs.HHMMSS2Sec(trip.Properties.ArrivalTime)
+	departureTime := gtfs.HHMMSS2Sec(trip.Properties.DepartureTime)
+	trip.Properties.TotalTime = departureTime - arrivalTime
 }
